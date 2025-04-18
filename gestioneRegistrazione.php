@@ -30,11 +30,16 @@ if($risultatoCheck->num_rows > 0) {
     exit();
 }
 
-//se non c'è allora:
-$query = "INSERT INTO utenti (username, password, XP, Monete) VALUES (?, ?, 0, 0)";
-$stmt = $conn->prepare($query);
-$hashed_password = md5($pass);
-$stmt->bind_param("ss", $user, $hashed_password);
+$checkPrestigio = $conn->query("SELECT ID FROM prestigio LIMIT 1");
+if ($checkPrestigio->num_rows > 0) {
+    $prestigioRow = $checkPrestigio->fetch_assoc();
+    $defaultPrestigio = $prestigioRow['ID'];
+    
+    $query = "INSERT INTO utenti (username, password, XP, Monete, prestigioAttuale) VALUES (?, ?, 0, 0, ?)";
+    $stmt = $conn->prepare($query);
+    $hashed_password = md5($pass);
+    $stmt->bind_param("ssi", $user, $hashed_password, $defaultPrestigio);
+}
 $result = $stmt->execute();
 
 if($result){

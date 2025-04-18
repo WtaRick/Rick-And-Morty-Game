@@ -23,19 +23,19 @@ $nome_corretto = $_SESSION["episodio_nome"];
 if(strtolower($risposta_utente) == strtolower($nome_corretto)){     // strtolower --> trasforma tutta la stringa inserita dall’utente in minuscolo.
 
     //se la risposyta è corretta aggiorno
-    $user_id = $_SESSION["user_id"];
+    $idUtente = $_SESSION["user_id"];
     $monete_guadagnate = 40; //piu XP e MONETE perche è piu diffcile
     $xp_guadagnati = 20;
     
     //aggiorno DB
-    $q = "UPDATE utenti SET XP = XP + $xp_guadagnati, Monete = Monete + $monete_guadagnate WHERE ID = $user_id";
+    $q = "UPDATE utenti SET XP = XP + $xp_guadagnati, Monete = Monete + $monete_guadagnate WHERE ID = $idUtente";
     $conn->query($q);
     
 
     //devo controllare se l'utente ha raggiunto un nuovo prestigio
 
     //prendo dati utente
-    $q_utente = "SELECT XP FROM utenti WHERE ID = $user_id";
+    $q_utente = "SELECT XP FROM utenti WHERE ID = $idUtente";
     $result = $conn->query($q_utente);
     $utente = $result->fetch_assoc();
     $xp_totale = $utente["XP"];
@@ -51,17 +51,17 @@ if(strtolower($risposta_utente) == strtolower($nome_corretto)){     // strtolowe
         $nuovo_prestigio = $prestigio["ID"];
         
         //aggirono prestigio
-        $q_update = "UPDATE utenti SET prestigioAttuale = $nuovo_prestigio WHERE ID = $user_id";
+        $q_update = "UPDATE utenti SET prestigioAttuale = $nuovo_prestigio WHERE ID = $idUtente";
         $conn->query($q_update);
         
 
         //controllo se l'utente ha gia questo prestigio e se ottengo 0 sono a psoto
-        $q_check = "SELECT * FROM utente_prestigio WHERE utenteID = $user_id AND prestigioID = $nuovo_prestigio";
+        $q_check = "SELECT * FROM utente_prestigio WHERE utenteID = $idUtente AND prestigioID = $nuovo_prestigio";
         $result_check = $conn->query($q_check);
         
         if($result_check->num_rows == 0){
             //aggiungo il badge del prestigio
-            $q_badge = "INSERT INTO utente_prestigio (utenteID, prestigioID) VALUES ($user_id, $nuovo_prestigio)";
+            $q_badge = "INSERT INTO utente_prestigio (utenteID, prestigioID) VALUES ($idUtente, $nuovo_prestigio)";
             $conn->query($q_badge);
         }
     }

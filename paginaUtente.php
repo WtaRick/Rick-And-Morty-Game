@@ -14,8 +14,8 @@ if(!isset($_SESSION["user_id"])){
 //PER DATI UTENTE
 
 //prendo le informazioni utente aggiornate (per sicurezza)
-$user_id = $_SESSION["user_id"];
-$query = "SELECT * FROM utenti WHERE ID = $user_id";
+$idUtente = $_SESSION["user_id"];
+$query = "SELECT * FROM utenti WHERE ID = $idUtente";
 $result = $conn->query($query);
 $utente = $result->fetch_assoc();
 
